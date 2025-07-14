@@ -6,7 +6,7 @@ app = FastAPI()
 
 # Define your first API endpoint (route)
 @app.get("/", tags=['root'])
-async def read_root():
+async def read_root_endpoint():
     nombre = 'Gustavo'
     html_content = f'<h1>Hello {nombre} From API, this is root</h1>'
     return HTMLResponse(html_content)
@@ -14,7 +14,7 @@ async def read_root():
 
 # Define your first API endpoint (route)
 @app.get("/cat", tags=['cat'])
-async def read_root():
+async def read_cat_endpoint():
     nombre = 'Cat'
     html_content = f'<h1>Hello {nombre} From API, this is CAT Endpoint</h1>'
     return HTMLResponse(html_content)
