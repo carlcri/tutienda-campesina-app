@@ -77,12 +77,9 @@ async def get_client_by_id(client_id_to_find: int = Path(...,
 
     for client in clients:
         if client['id']==client_id_to_find:   
-            found_client_list.append(client)
-            break 
+            return JSONResponse(status_code=200, content=client)
 
-    if not found_client_list:
-        message = f"cliente con id {client_id_to_find} no existe"
-        raise HTTPException(status_code=404, detail={"message":message})
+    message = f"cliente con id {client_id_to_find} no existeee"
+    raise HTTPException(status_code=404, detail={"message":message})
 
-    else:
-        return JSONResponse(status_code=200, content=found_client_list[0])
+
