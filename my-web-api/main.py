@@ -1,15 +1,19 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Path
 from fastapi.responses import HTMLResponse, JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
+from datos import CLIENTS as clients
+
+
 
 # Create a FastAPI application instance
 app = FastAPI()
+app.title = "Prototipo Plataforma de Comercializacion"
+app.version = "0.0.1"
 
 
 # --- Configuración de MongoDB ---
-# IMPORTANTE: Usa el nombre del contenedor de MongoDB dentro de la red Docker.
-# Docker sabe cómo encontrar 'tuTiendaDB' dentro de la red 'platzinet'.
-MONGO_DETAILS = "mongodb://tuTiendaDB:27017/"
+# MONGO_DETAILS = "mongodb://tuTiendaDB:27017/"
+MONGO_DETAILS = "mongodb://localhost:27017/"
 
 
 
@@ -17,7 +21,7 @@ MONGO_DETAILS = "mongodb://tuTiendaDB:27017/"
 @app.get("/", tags=['root'])
 async def read_root_endpoint():
     nombre = 'Gustavo'
-    html_content = f'<h1>Hello {nombre} From API, this is ROOT</h1>'
+    html_content = f'<h1>Hello {nombre} From API, this is Roottt</h1>'
     return HTMLResponse(html_content)
 
 
@@ -25,7 +29,7 @@ async def read_root_endpoint():
 @app.get("/cat", tags=['cat'])
 async def read_cat_endpoint():
     nombre = 'Cat'
-    html_content = f'<h1>Hello {nombre} From API, this is CAT(Antonia) Endpoint</h1>'
+    html_content = f'<h1>Hello {nombre} From API, this is CAT(Antoniaa) Endpoint</h1>'
     return HTMLResponse(html_content)
 
 
@@ -57,3 +61,28 @@ async def check_db_connection():
         print(f"Error durante la verificación de conexión a MongoDB: {e}")
         raise HTTPException(status_code=500, detail=f"Fallo en la conexión a MongoDB: {e}. Asegúrate de que 'tuTiendaDB' esté corriendo y en la misma red.")
 
+
+
+# Path Parameter para encontrar un cliente por su id 
+@app.get("/client/{client_id_to_find}", tags=['client'], status_code=200)
+async def get_client_by_id(client_id_to_find: int = Path(..., 
+                                                 gt=0, 
+                                                 description="ID del cliente a buscar")):
+    
+    """
+    Busca un cliente en DB y devuelve todos sus datos si es encontrado.
+    Si el cliente no existe, retorna un error 404 Not Found.
+    """
+    found_client_list = []
+
+    for client in clients:
+        if client['id']==client_id_to_find:   
+            found_client_list.append(client)
+            break 
+
+    if not found_client_list:
+        message = f"cliente con id {client_id_to_find} no existe"
+        raise HTTPException(status_code=404, detail={"message":message})
+
+    else:
+        return JSONResponse(status_code=200, content=found_client_list[0])
