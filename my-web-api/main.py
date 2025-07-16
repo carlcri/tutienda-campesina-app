@@ -2,13 +2,13 @@ from fastapi import FastAPI, HTTPException, Path
 from fastapi.responses import HTMLResponse, JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
 from datos import CLIENTS as clients
-
+from typing import Optional
 
 
 # Create a FastAPI application instance
 app = FastAPI()
 app.title = "Prototipo Plataforma de Comercializacion"
-app.version = "0.0.1"
+app.version = "0.0.2"
 
 
 # --- Configuración de MongoDB ---
@@ -16,12 +16,33 @@ app.version = "0.0.1"
 MONGO_DETAILS = "mongodb://localhost:27017/"
 
 
+# Guarda la conexión global a MongoDB; es None inicialmente y se establece al inicio de la app.
+db_client : Optional[AsyncIOMotorClient] = None
+
+
+
+@app.on_event("startup")
+async def startup_db_client():
+    try:
+        db_client = AsyncIOMotorClient(MONGO_DETAILS)
+        print('Conexion Exitosa establecida en startup')
+    except:
+        raise HTTPException(status_code=500, detail={"message":"Error de Servidor BD no Disponible"})
+    
+
+@app.on_event("shutdown")
+async def shutdown_db_client():
+    if db_client:
+        db_client.close()
+        print('Se ha cerrado la conexion')
+
+
 
 # Define your first API endpoint (route)
 @app.get("/", tags=['root'])
 async def read_root_endpoint():
     nombre = 'Gustavo'
-    html_content = f'<h1>Hello {nombre} From API, this is Roottt</h1>'
+    html_content = f'<h1>Hello {nombre} From API, this is ROOTERDAM</h1>'
     return HTMLResponse(html_content)
 
 
@@ -34,32 +55,6 @@ async def read_cat_endpoint():
 
 
 
-# --- Nuevo Endpoint: ¡La verificación de conexión a MongoDB! ---
-@app.get("/check-db-connection", tags=['database'])
-async def check_db_connection():
-    """
-    Endpoint para verificar si la aplicación puede conectarse a MongoDB.
-    Intenta crear un cliente y realizar una operación simple.
-    """
-    try:
-        # Crea un cliente de MongoDB.
-        # Aquí es donde intentamos conectar.
-        client = AsyncIOMotorClient(MONGO_DETAILS)
-
-        # Intenta una operación muy simple para confirmar que la conexión funciona.
-        # 'ping' es un comando ligero que solo verifica si el servidor está vivo.
-        await client.admin.command('ping')
-
-        # Si llegamos aquí, la conexión fue exitosa.
-        client.close() # Cierra la conexión (importante en este enfoque simple)
-        return JSONResponse(content={"status": "success", 
-                                     "message": "¡Conexión a MongoDB exitosaa!"})
-
-    except Exception as e:
-        # Si algo falla (MongoDB no está corriendo, nombre incorrecto, etc.)
-        # capturamos el error y devolvemos un mensaje de fallo.
-        print(f"Error durante la verificación de conexión a MongoDB: {e}")
-        raise HTTPException(status_code=500, detail=f"Fallo en la conexión a MongoDB: {e}. Asegúrate de que 'tuTiendaDB' esté corriendo y en la misma red.")
 
 
 
