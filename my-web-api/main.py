@@ -4,11 +4,8 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from datos import CLIENTS as clients
 from typing import Optional
 
-
-# Create a FastAPI application instance
-app = FastAPI()
-app.title = "Prototipo Plataforma de Comercializacion"
-app.version = "0.0.2"
+# Importar asynccontextmanager para los eventos lifespan
+# from contextlib import asynccontextmanager
 
 
 # --- Configuración de MongoDB ---
@@ -20,14 +17,20 @@ MONGO_DETAILS = "mongodb://localhost:27017/"
 db_client : Optional[AsyncIOMotorClient] = None
 
 
+# Create a FastAPI application instance
+app = FastAPI()
+app.title = "Prototipo Plataforma de Comercializacion"
+app.version = "0.0.2"
+
 
 @app.on_event("startup")
 async def startup_db_client():
+    global db_client
     try:
         db_client = AsyncIOMotorClient(MONGO_DETAILS)
-        print('Conexion Exitosa establecida en startup')
-    except:
-        raise HTTPException(status_code=500, detail={"message":"Error de Servidor BD no Disponible"})
+        print(f'Conexion Exitosa a la BD: {MONGO_DETAILS}')
+    except Exception as e:
+        raise HTTPException(status_code=500, detail={"message":"Error de Servidor BD no Disponibleee"})
     
 
 @app.on_event("shutdown")
@@ -35,25 +38,25 @@ async def shutdown_db_client():
     if db_client:
         db_client.close()
         print('Se ha cerrado la conexion')
+    else:
+        print('La conexión a MongoDB no se estableció, no hay nada que cerrar.')
 
 
 
-# Define your first API endpoint (route)
+# Define your first API endpoint
 @app.get("/", tags=['root'])
 async def read_root_endpoint():
-    nombre = 'Gustavo'
+    nombre = 'Gustaavo'
     html_content = f'<h1>Hello {nombre} From API, this is ROOTERDAM</h1>'
     return HTMLResponse(html_content)
 
 
-# Define your first API endpoint (route)
+# Define your Second API endpoint
 @app.get("/cat", tags=['cat'])
 async def read_cat_endpoint():
     nombre = 'Cat'
     html_content = f'<h1>Hello {nombre} From API, this is CAT(Antoniaa) Endpoint</h1>'
     return HTMLResponse(html_content)
-
-
 
 
 
