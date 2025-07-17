@@ -1,0 +1,19 @@
+services:
+  app-temp:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8000:8000
+    volumes:
+      - .:/web-server
+    networks:
+      - platzinet
+
+    
+networks:
+  platzinet:
+    external: True
+
+
+

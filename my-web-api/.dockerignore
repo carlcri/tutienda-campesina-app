@@ -1,0 +1,27 @@
+# Ignorar directorios de cache de Python
+__pycache__/
+
+# Ignorar archivos de bytecode de Python
+*.pyc
+*.pyo
+*.pyd
+
+# Ignorar entornos virtuales
+venv/
+.venv/
+
+# Ignorar archivos específicos de Docker o Compose si no son necesarios dentro de la imagen
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Ignorar directorios de control de versiones
+.git/
+.svn/
+.hg/
+
+# Ignorar archivos de IDEs (por ejemplo, VS Code)
+.vscode/
+
+# Ignorar archivos de logs
+*.log

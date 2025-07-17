@@ -9,8 +9,8 @@ from typing import Optional
 
 
 # --- Configuración de MongoDB ---
-# MONGO_DETAILS = "mongodb://tuTiendaDB:27017/"
-MONGO_DETAILS = "mongodb://localhost:27017/"
+MONGO_DETAILS = "mongodb://tuTiendaDB:27017/"
+# MONGO_DETAILS = "mongodb://localhost:27017/"
 
 
 # Guarda la conexión global a MongoDB; es None inicialmente y se establece al inicio de la app.
@@ -30,11 +30,12 @@ async def startup_db_client():
         db_client = AsyncIOMotorClient(MONGO_DETAILS)
         print(f'Conexion Exitosa a la BD: {MONGO_DETAILS}')
     except Exception as e:
-        raise HTTPException(status_code=500, detail={"message":"Error de Servidor BD no Disponibleee"})
+        raise HTTPException(status_code=500, detail={"message":"Error de Servidor BD no Disponib"})
     
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
+    print('hola hijuemadre')
     if db_client:
         db_client.close()
         print('Se ha cerrado la conexion')
@@ -55,7 +56,7 @@ async def read_root_endpoint():
 @app.get("/cat", tags=['cat'])
 async def read_cat_endpoint():
     nombre = 'Cat'
-    html_content = f'<h1>Hello {nombre} From API, this is CAT(Antoniaa) Endpoint</h1>'
+    html_content = f'<h1>Hello {nombre} From API, this is CAT(ANTONIA ) Endpoint</h1>'
     return HTMLResponse(html_content)
 
 
@@ -82,10 +83,11 @@ async def get_student_by_id(client_id_to_find: int = Path(...,
 
 
 
-@app.get("/{client_id_to_find}", tags=['clients'])
+
+@app.get("/client/{client_id_to_find}", tags=['clients'])
 async def get_client_by_id(client_id_to_find:int = Path(...,
                                                         gt=0,
-                                                        description="ID del estudiante a buscar")):
+                                                        description="ID del cliente a buscar")):
     """
     Busca un cliente por su ID en la base de datos MongoDB.
 
@@ -105,7 +107,7 @@ async def get_client_by_id(client_id_to_find:int = Path(...,
     
     collection = db_client['db-tienda'].clients 
     found_client = await collection.find_one({'id': client_id_to_find})
-    print(found_client)
+
     if not found_client:
         message = f'cliente con id:{client_id_to_find} no encontrado'
         raise HTTPException(status_code=404, detail={"message":message})
