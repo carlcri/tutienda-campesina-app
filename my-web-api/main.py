@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Path
 from fastapi.responses import HTMLResponse, JSONResponse
 from motor.motor_asyncio import AsyncIOMotorClient
-from datos import CLIENTS as clients
+from datos import STUDENTS as students
 from typing import Optional
 
 # Importar asynccontextmanager para los eventos lifespan
@@ -61,23 +61,54 @@ async def read_cat_endpoint():
 
 
 
-# Path Parameter para encontrar un cliente por su id 
-@app.get("/client/{client_id_to_find}", tags=['client'], status_code=200)
-async def get_client_by_id(client_id_to_find: int = Path(..., 
+# Path Parameter para encontrar un estudiante por su id 
+@app.get("/student/{client_id_to_find}", tags=['student'], status_code=200)
+async def get_student_by_id(client_id_to_find: int = Path(..., 
                                                  gt=0, 
-                                                 description="ID del cliente a buscar")):
+                                                 description="ID del estudiante a buscar")):
     
     """
-    Busca un cliente en DB y devuelve todos sus datos si es encontrado.
-    Si el cliente no existe, retorna un error 404 Not Found.
+    Busca un estudiante en DB y devuelve todos sus datos si es encontrado.
+    Si el estudiante no existe, retorna un error 404 Not Found.
     """
     found_client_list = []
 
-    for client in clients:
+    for client in students:
         if client['id']==client_id_to_find:   
             return JSONResponse(status_code=200, content=client)
 
-    message = f"cliente con id {client_id_to_find} no existeee"
+    message = f"estudiante con id {client_id_to_find} no existeee"
     raise HTTPException(status_code=404, detail={"message":message})
 
 
+
+@app.get("/{client_id_to_find}", tags=['clients'])
+async def get_client_by_id(client_id_to_find:int = Path(...,
+                                                        gt=0,
+                                                        description="ID del estudiante a buscar")):
+    """
+    Busca un cliente por su ID en la base de datos MongoDB.
+
+    Args:
+        client_id_to_find (int): El ID del cliente a buscar. 
+
+    Returns:
+        JSONResponse: Un JSON con los datos del cliente si es encontrado.
+
+    Raises:
+        HTTPException:
+            - 500 Internal Server Error si la conexión a la base de datos no está establecida.
+            - 404 Not Found si el cliente con el ID especificado no existe.
+    """
+    if not db_client:
+        raise HTTPException(status_code=500, detail={"message": "la conexion a la BD ha fallado"})
+    
+    collection = db_client['db-tienda'].clients 
+    found_client = await collection.find_one({'id': client_id_to_find})
+    print(found_client)
+    if not found_client:
+        message = f'cliente con id:{client_id_to_find} no encontrado'
+        raise HTTPException(status_code=404, detail={"message":message})
+    
+    found_client['_id'] = str(found_client['_id'])
+    return JSONResponse(status_code=200, content=found_client)

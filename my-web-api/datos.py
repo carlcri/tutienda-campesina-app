@@ -1,4 +1,4 @@
-CLIENTS = [
+STUDENTS = [
     {
         "id": 1, # Nuevo campo ID
         "name": "Ana",
