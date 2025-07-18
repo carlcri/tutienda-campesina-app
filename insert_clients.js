@@ -1,3 +1,4 @@
+use db-tienda
 db.clients.insertMany([
     {
         "id": 1,

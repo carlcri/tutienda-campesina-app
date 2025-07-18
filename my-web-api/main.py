@@ -56,7 +56,7 @@ async def read_root_endpoint():
 @app.get("/cat", tags=['cat'])
 async def read_cat_endpoint():
     nombre = 'Cat'
-    html_content = f'<h1>Hello {nombre} From API, this is CAT(ANTONIA ) Endpoint</h1>'
+    html_content = f'<h1>Hello {nombre} From API, this is CAT(ANTONIA mi gatito feliz ) Endpoint</h1>'
     return HTMLResponse(html_content)
 
 

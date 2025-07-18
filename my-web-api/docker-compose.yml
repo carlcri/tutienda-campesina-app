@@ -3,6 +3,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      - tuTiendaDB
     ports:
       - 8000:8000
     volumes:
@@ -10,10 +12,20 @@ services:
     networks:
       - platzinet
 
+  tuTiendaDB:
+    image: mongo:5.0
+    ports:
+      - 27017:27017
+    volumes:
+      - dbAppTienda:/data/db
+    networks:
+      - platzinet
+    
     
 networks:
   platzinet:
     external: True
 
-
+volumes: # <--- YOU NEED TO DEFINE THE NAMED VOLUME HERE
+  dbAppTienda: # <--- This declares the 'dbAppTienda' volume
 
