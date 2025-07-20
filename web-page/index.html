@@ -4,11 +4,128 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Consultar Cliente (Básico)</title>
-    <link rel="stylesheet" href="./styles.css"> 
+    <!-- <link rel="stylesheet" href="./css/estilos.css">  -->
+
+    <style>
+        /* Estilos generales del cuerpo */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f4f4f4;
+            color: #333; /* Color de texto estándar */
+        }
+
+        /* Estilos del contenedor principal del formulario */
+        .container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            margin: 50px auto; /* Centra el contenedor horizontalmente */
+        }
+
+        /* Estilos del título */
+        h1 {
+            color: #0056b3;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        /* Estilos para agrupar elementos del formulario */
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        /* Estilos para las etiquetas de los campos */
+        label {
+            display: block; /* Hace que la etiqueta ocupe su propia línea */
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        /* Estilos para el campo de entrada de número */
+        input[type="number"] {
+            width: calc(100% - 22px); /* Ancho del 100% menos el padding y el borde */
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box; /* Incluye padding y borde en el ancho total */
+        }
+
+        /* Estilos para el botón de envío */
+        button {
+            background-color: #007bff;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%; /* Hace que el botón ocupe todo el ancho disponible */
+            transition: background-color 0.2s ease; /* Efecto suave al pasar el ratón */
+        }
+
+        /* Estilos al pasar el ratón sobre el botón */
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* --- ESTILOS CLAVE PARA OCULTAR EL CONTENEDOR DE RESULTADOS INICIALMENTE --- */
+
+        #result-container {
+            display: none; /* <--- Esto oculta el contenedor COMPLETO al inicio */
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background-color: #e9ecef;
+
+            min-height: 50px; /* Asegura un tamaño mínimo */
+            overflow-y: auto;
+        }
+
+        /* Oculta todos los elementos con la clase 'message' POR DEFECTO */
+        .message {
+            display: none;
+        }
+
+        /* Muestra el mensaje inicial por defecto y lo hace rojo */
+        #initial-message {
+            display: block; /* Este sí debe ser visible al cargar la página */
+            color: red; /* <--- COLOR ROJO SOLICITADO */
+            text-align: center;
+            margin-bottom: 20px; /* Añadido un poco de espacio abajo */
+        }
+
+        /* Estilos para los diferentes estados (los agregarás/quitarás con JS) */
+        .result-loading {
+            border: 1px solid gray !important;
+            background-color: #f0f0f0;
+        }
+
+        .result-success {
+            border: 1px solid green !important;
+            background-color: #e6ffe6;
+        }
+
+        .result-error {
+            border: 1px solid red !important;
+            background-color: #ffe6e6;
+        }
+
+        /* Colores específicos para los mensajes internos (si están visibles) */
+        #loading-message { color: gray; }
+        #error-message { color: red; }
+        #client-details { color: #3f4b8d; }
+        #client-details h3 { color: #3f4b8d; text-align: center;} /* El título dentro de client-details también */
+    </style>
+
 </head>
 <body>
     <div class="container">
         <h1>Consultar Cliente por ID</h1>
+        <p id="initial-message" class="message">Ingresa un ID de cliente y haz clic en "Buscar Cliente".</p>
 
         <form id="clientForm">
             <div class="form-group">
@@ -18,14 +135,20 @@
             <button type="submit" id="searchClientButton">Buscar Cliente</button>
         </form>
 
-        <div id="result">
-            Esperando consulta...
+    <div id="result-container">
+        <p id="loading-message" class="message">Buscando cliente...</p>
+        <p id="error-message" class="message">Error message</p>
+
+        <div id="client-details" class="message">
+            <h3 id="client-details-title">Cliente Encontrado</h3>
+            <p><strong>ID:</strong> <span id="client-id-display">client placeholder</span></p>
+            <p><strong>Nombre:</strong> <span id="client-name-display"></span></p>
+            <p><strong>APELLIDO:</strong> <span id="client-lastname-display"></span></p>
+            <p><strong>Fecha de Nacimiento:</strong> <span id="client-dob-display"></span></p>
         </div>
+    </div>    
     </div>
     <script src="./JS/jquery-3.3.1.min.js"></script>    
     <script src="./JS/my-script.js"></script>
 </body>
 </html>
-
-
-

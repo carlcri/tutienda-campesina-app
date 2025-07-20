@@ -3,7 +3,7 @@ body {
     font-family: Arial, sans-serif;
     margin: 20px;
     background-color: #f4f4f4;
-    color: #b15a5a;
+    color: #333; /* Color de texto estándar */
 }
 
 /* Estilos del contenedor principal del formulario */
@@ -62,15 +62,52 @@ button:hover {
     background-color: #0056b3;
 }
 
-/* Estilos para el área de resultados (inicialmente solo un placeholder) */
-#result {
+/* --- ESTILOS CLAVE PARA OCULTAR EL CONTENEDOR DE RESULTADOS INICIALMENTE --- */
+
+#result-container {
+    display: none !important; /* <--- Esto oculta el contenedor COMPLETO al inicio */
     margin-top: 25px;
     padding: 15px;
     border-radius: 4px;
     border: 1px solid #ccc;
     background-color: #e9ecef;
-    white-space: pre-wrap; /* Mantiene espacios y saltos de línea */
-    word-wrap: break-word; /* Evita desbordamiento en palabras largas */
-    max-height: 300px; /* Limita la altura y agrega scroll si es necesario */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-height: 50px; /* Asegura un tamaño mínimo */
     overflow-y: auto;
 }
+
+/* Oculta todos los elementos con la clase 'message' POR DEFECTO */
+.message {
+    display: none;
+}
+
+/* Muestra el mensaje inicial por defecto y lo hace rojo */
+#initial-message {
+    display: block; /* Este sí debe ser visible al cargar la página */
+    color: rgb(0, 140, 255); /* <--- COLOR ROJO SOLICITADO */
+    text-align: center;
+    margin-bottom: 20px; /* Añadido un poco de espacio abajo */
+}
+
+/* Estilos para los diferentes estados (los agregarás/quitarás con JS) */
+.result-loading {
+    border: 1px solid gray !important;
+    background-color: #f0f0f0;
+}
+
+.result-success {
+    border: 1px solid green !important;
+    background-color: #e6ffe6;
+}
+
+.result-error {
+    border: 1px solid red !important;
+    background-color: #ffe6e6;
+}
+
+/* Colores específicos para los mensajes internos (si están visibles) */
+#loading-message { color: gray; }
+#error-message { color: red; }
+#client-details { color: green; }
+#client-details h3 { color: green; } /* El título dentro de client-details también */
