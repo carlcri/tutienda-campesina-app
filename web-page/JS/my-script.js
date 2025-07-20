@@ -13,6 +13,7 @@ $(document).ready(function(){
 
         if(isNaN(client_id)){
             console.log('Debe ingresar un numero valido');
+            
             return;
         }
 

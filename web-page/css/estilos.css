@@ -59,20 +59,18 @@ button {
 
 /* Estilos al pasar el ratón sobre el botón */
 button:hover {
-    background-color: #0056b3;
+    background-color: #666a8d;
 }
 
 /* --- ESTILOS CLAVE PARA OCULTAR EL CONTENEDOR DE RESULTADOS INICIALMENTE --- */
 
 #result-container {
-    display: none !important; /* <--- Esto oculta el contenedor COMPLETO al inicio */
+    display: none; /* <--- Esto oculta el contenedor COMPLETO al inicio */
     margin-top: 25px;
     padding: 15px;
     border-radius: 4px;
     border: 1px solid #ccc;
     background-color: #e9ecef;
-    white-space: pre-wrap;
-    word-wrap: break-word;
     min-height: 50px; /* Asegura un tamaño mínimo */
     overflow-y: auto;
 }
@@ -109,5 +107,5 @@ button:hover {
 /* Colores específicos para los mensajes internos (si están visibles) */
 #loading-message { color: gray; }
 #error-message { color: red; }
-#client-details { color: green; }
-#client-details h3 { color: green; } /* El título dentro de client-details también */
+#client-details { color: #3f4b8d; }
+#client-details h3 { color: #3f4b8d; } /* El título dentro de client-details también */
