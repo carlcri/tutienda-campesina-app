@@ -47,7 +47,7 @@ async def shutdown_db_client():
 # Define your first API endpoint
 @app.get("/", tags=['root'])
 async def read_root_endpoint():
-    nombre = 'Gustavin Pinguin'
+    nombre = 'Gustavo Petro'
     html_content = f'<h1>Hello {nombre} From API, this is ROOTERDAM</h1>'
     return HTMLResponse(html_content)
 

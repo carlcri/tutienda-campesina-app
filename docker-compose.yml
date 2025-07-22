@@ -1,14 +1,27 @@
+version: '3.8' # Versión de la sintaxis de Docker Compose
+
 services:
+  apache-server:
+    build:
+      context: ./apache-config
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    volumes:
+      - ./web-page:/var/www/html
+    networks:
+      - platzinet
+      
   app-temp:
     build: 
-      context: .
+      context: ./my-web-api
       dockerfile: Dockerfile
     depends_on:
       - tuTiendaDB
     ports:
       - 8000:8000
     volumes:
-      - .:/web-server
+      - ./my-web-api:/web-server
     networks:
       - platzinet
 
