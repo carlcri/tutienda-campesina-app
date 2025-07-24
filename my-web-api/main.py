@@ -1,47 +1,34 @@
 from fastapi import FastAPI, HTTPException, Path
 from fastapi.responses import HTMLResponse, JSONResponse
-from motor.motor_asyncio import AsyncIOMotorClient
+
 from datos import STUDENTS as students
-from typing import Optional
 
-# Importar asynccontextmanager para los eventos lifespan
-# from contextlib import asynccontextmanager
+# Importar la instancia de settings desde app.core.config
+from core.config import settings
 
+# Importar las funciones de conexión/desconexión de la base de datos
+# Importamos 'db' para acceder al cliente
+from core.database import connect_to_mongo, close_mongo_connection, db_client
 
 # --- Configuración de MongoDB ---
-MONGO_DETAILS = "mongodb://tuTiendaDB:27017/"
-# MONGO_DETAILS = "mongodb://localhost:27017/"
-
-
-# Guarda la conexión global a MongoDB; es None inicialmente y se establece al inicio de la app.
-db_client : Optional[AsyncIOMotorClient] = None
+MONGO_DETAILS = settings.conection_string()
 
 
 # Create a FastAPI application instance
 app = FastAPI()
-app.title = "Prototipo Plataforma de Comercializacion"
-app.version = "0.0.2"
+app.title = "API Prototipo Plataforma de Comercializacion"
+app.version = "0.0.3"
 
 
 @app.on_event("startup")
 async def startup_db_client():
-    global db_client
-    try:
-        db_client = AsyncIOMotorClient(MONGO_DETAILS)
-        print(f'Conexion Exitosa a la BD: {MONGO_DETAILS}')
-    except Exception as e:
-        raise HTTPException(status_code=500, detail={"message":"Error de Servidor BD no Disponib"})
+    await connect_to_mongo()
     
+
 
 @app.on_event("shutdown")
 async def shutdown_db_client():
-    print('hola hijuemadre')
-    if db_client:
-        db_client.close()
-        print('Se ha cerrado la conexion')
-    else:
-        print('La conexión a MongoDB no se estableció, no hay nada que cerrar.')
-
+    await close_mongo_connection()
 
 
 # Define your first API endpoint
@@ -49,6 +36,8 @@ async def shutdown_db_client():
 async def read_root_endpoint():
     nombre = 'Gustavo Petro'
     html_content = f'<h1>Hello {nombre} From API, this is ROOTERDAM</h1>'
+    print('hola')
+    print(db_client)
     return HTMLResponse(html_content)
 
 
@@ -102,10 +91,10 @@ async def get_client_by_id(client_id_to_find:int = Path(...,
             - 500 Internal Server Error si la conexión a la base de datos no está establecida.
             - 404 Not Found si el cliente con el ID especificado no existe.
     """
-    if not db_client:
+    if not db_client['client']:
         raise HTTPException(status_code=500, detail={"message": "la conexion a la BD ha fallado"})
     
-    collection = db_client['db-tienda'].clients 
+    collection = db_client['client']['db-tienda'].clients 
     found_client = await collection.find_one({'id': client_id_to_find})
 
     if not found_client:
@@ -114,3 +103,4 @@ async def get_client_by_id(client_id_to_find:int = Path(...,
     
     found_client['_id'] = str(found_client['_id'])
     return JSONResponse(status_code=200, content=found_client)
+
