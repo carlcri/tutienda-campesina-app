@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Path
 from fastapi.responses import JSONResponse
-from datos import STUDENTS as students
+from datos import STUDENTS as students_db
 
 router = APIRouter(tags=['students'])
 
@@ -19,7 +19,7 @@ async def get_student_by_id(client_id_to_find: int = Path(...,
     found_client_list = []
     pass
 
-    for client in students:
+    for client in students_db:
         if client['id']==client_id_to_find:   
             return JSONResponse(status_code=200, content=client)
 
